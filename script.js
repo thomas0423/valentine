@@ -8,12 +8,12 @@
   const ANNIVERSARY = "2025-09-13";
   const QUOTES = [
   "You are doing better than you think",
-  "I am proud of you always",
+  "I am proud of you — always",
   "你不用逞强，我在",
   "别怕慢，只要你没放弃",
-  "You are loved even on messy days",
+  "You are loved, even on messy days",
   "你不是负担，你是我想守护的人",
-  "Take a breath I have got you",
+  "Breathe. I’ve got you",
   "你值得被温柔对待"
 ];
 
