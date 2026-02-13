@@ -498,3 +498,24 @@ async function startMusic() {
     openLetterBtn?.addEventListener("click", () => setTimeout(showControls, 500), { once:true });
   }
 })();
+const sparklesBtn = document.querySelector(".sparkles-btn")
+
+if (sparklesBtn) {
+  sparklesBtn.addEventListener("click", () => {
+    for (let i = 0; i < 25; i++) {
+      const spark = document.createElement("div")
+      spark.className = "sparkle"
+      spark.innerHTML = ["✨","💖","💗","🌸"][Math.floor(Math.random()*4)]
+      spark.style.left = Math.random() * 100 + "vw"
+      spark.style.top = Math.random() * 100 + "vh"
+      spark.style.position = "fixed"
+      spark.style.fontSize = "20px"
+      spark.style.animation = "floatUp 1.5s ease forwards"
+      document.body.appendChild(spark)
+
+      setTimeout(() => {
+        spark.remove()
+      }, 1500)
+    }
+  })
+}
