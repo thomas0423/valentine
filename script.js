@@ -30,6 +30,21 @@
 
   const $ = (s) => document.querySelector(s);
 
+  // ===== Intro overlay logic =====
+  const intro = document.getElementById("intro");
+  const introName = document.getElementById("introName");
+  if (introName) introName.textContent = "Yiting";
+  function hideIntro(){
+    if (!intro) return;
+    intro.classList.add("hide");
+    setTimeout(() => intro.remove(), 600);
+  }
+  // auto hide after 3 seconds
+  if (intro) setTimeout(hideIntro, 3000);
+  // tap to skip
+  if (intro) intro.addEventListener("click", hideIntro);
+
+
   const nameBadge = $("#nameBadge");
   const nameInline = $("#nameInline");
   const nick = $("#nickname");
@@ -158,6 +173,7 @@
   // ===== Ultimate romantic effect (music-reactive glow) =====
   let audioCtx = null;
   let analyser = null;
+  let beatValue = 0;
   let dataArr = null;
   let srcNode = null;
   let rafId = null;
@@ -185,6 +201,7 @@
         const avg = sum / (dataArr.length * 255);
         // smoothing
         const beat = Math.max(0, Math.min(1, avg * 1.6));
+        beatValue = beat;
         document.documentElement.style.setProperty("--beat", beat.toFixed(4));
         rafId = requestAnimationFrame(tick);
       };
@@ -224,6 +241,7 @@ async function startMusic() {
     bgm.pause();
     document.body.classList.remove("musicOn");
     document.documentElement.style.setProperty("--beat","0");
+    beatValue = 0;
     if (musicBtn) {
       musicBtn.classList.remove("on");
       musicBtn.textContent = "Music ♪";
@@ -341,7 +359,7 @@ async function startMusic() {
       ctx.rotate(h.rot);
       ctx.globalAlpha = alpha;
       ctx.fillStyle = h.col;
-      heartPath(0, 0, h.s);
+      heartPath(0, 0, h.s * (1 + beatValue * 0.14));
       ctx.fill();
       ctx.restore();
 
@@ -498,24 +516,76 @@ async function startMusic() {
     openLetterBtn?.addEventListener("click", () => setTimeout(showControls, 500), { once:true });
   }
 })();
-const sparklesBtn = document.querySelector(".sparkles-btn")
 
-if (sparklesBtn) {
-  sparklesBtn.addEventListener("click", () => {
-    for (let i = 0; i < 25; i++) {
-      const spark = document.createElement("div")
-      spark.className = "sparkle"
-      spark.innerHTML = ["✨","💖","💗","🌸"][Math.floor(Math.random()*4)]
-      spark.style.left = Math.random() * 100 + "vw"
-      spark.style.top = Math.random() * 100 + "vh"
-      spark.style.position = "fixed"
-      spark.style.fontSize = "20px"
-      spark.style.animation = "floatUp 1.5s ease forwards"
-      document.body.appendChild(spark)
+// ===== Ultimate Sparkles (burst + romantic mode + petal rain) =====
+const confettiSparkBtn = document.querySelector("#confetti")
 
-      setTimeout(() => {
-        spark.remove()
-      }, 1500)
-    }
+const __rand = (min, max) => min + Math.random() * (max - min)
+const __pick = (arr) => arr[(Math.random() * arr.length) | 0]
+
+function burstFromButton(btn){
+  const rect = btn.getBoundingClientRect()
+  const cx = rect.left + rect.width / 2
+  const cy = rect.top + rect.height / 2
+  const icons = ["✨","💖","💗","🌸","🤍"]
+
+  for (let i = 0; i < 42; i++) {
+    const el = document.createElement("div")
+    el.className = "sparkBurst"
+    el.textContent = __pick(icons)
+    el.style.left = cx + "px"
+    el.style.top = cy + "px"
+
+    const angle = __rand(-Math.PI, Math.PI)
+    const dist = __rand(40, 160)
+    const dx = Math.cos(angle) * dist
+    const dy = Math.sin(angle) * dist - __rand(10, 90)
+    el.style.setProperty("--dx", dx.toFixed(1) + "px")
+    el.style.setProperty("--dy", dy.toFixed(1) + "px")
+    el.style.setProperty("--rot", __rand(-120, 120).toFixed(0) + "deg")
+    el.style.fontSize = __rand(16, 26).toFixed(0) + "px"
+
+    document.body.appendChild(el)
+    setTimeout(() => el.remove(), 950)
+  }
+}
+
+function setSparkleMode(on){
+  document.body.classList.toggle("sparkleMode", on)
+}
+
+function petalRain(durationMs = 3000){
+  const start = performance.now()
+  const spawn = () => {
+    const now = performance.now()
+    if (now - start > durationMs) return
+
+    const p = document.createElement("div")
+    p.className = "petal"
+    const x = __rand(0, window.innerWidth)
+    const dx = __rand(-60, 60)
+    p.style.left = x + "px"
+    p.style.setProperty("--x", "0px")
+    p.style.setProperty("--dx", dx.toFixed(0) + "px")
+    p.style.setProperty("--dur", __rand(2200, 3600).toFixed(0) + "ms")
+    p.style.setProperty("--sway", __rand(900, 1600).toFixed(0) + "ms")
+    p.style.setProperty("--amp", __rand(-26, 26).toFixed(0) + "px")
+    p.style.setProperty("--r0", __rand(-40, 40).toFixed(0) + "deg")
+    p.style.setProperty("--r1", __rand(180, 360).toFixed(0) + "deg")
+
+    document.body.appendChild(p)
+    setTimeout(() => p.remove(), 4000)
+
+    setTimeout(spawn, __rand(60, 130))
+  }
+  spawn()
+}
+
+if (confettiSparkBtn) {
+  confettiSparkBtn.addEventListener("click", () => {
+    burstFromButton(confettiSparkBtn)
+    setSparkleMode(true)
+    setTimeout(() => setSparkleMode(false), 3200)
+    petalRain(3000)
   })
 }

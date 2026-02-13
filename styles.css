@@ -495,3 +495,122 @@ body.musicOn #openLetter.btn.primary{
   0% { transform: translateY(0) scale(1); opacity: 1; }
   100% { transform: translateY(-80px) scale(1.5); opacity: 0; }
 }
+
+/* ===== Ultimate Sparkles Pack ===== */
+
+/* Romantic filter mode (3s) */
+body.sparkleMode #glow{
+  filter: blur(calc(22px + var(--beat)*12px)) saturate(1.12);
+  transform: scale(calc(1.02 + var(--beat)*0.02));
+}
+body.sparkleMode .hero,
+body.sparkleMode .card{
+  box-shadow: 0 26px 90px rgba(20,20,60,.18);
+}
+body.sparkleMode .wrap{
+  filter: saturate(1.06);
+}
+
+/* Burst hearts (from button) */
+.sparkBurst{
+  position: fixed;
+  left: 0; top: 0;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 9999;
+  font-size: 18px;
+  opacity: 0;
+  animation: burstFly 900ms ease-out forwards;
+  filter: drop-shadow(0 10px 18px rgba(255,77,125,.22));
+  user-select: none;
+}
+@keyframes burstFly{
+  0%   { opacity: 0; transform: translate(-50%,-50%) scale(.7); }
+  10%  { opacity: 1; }
+  100% { opacity: 0; transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1.5) rotate(var(--rot)); }
+}
+
+/* Petal rain (3s) */
+.petal{
+  position: fixed;
+  top: -12vh;
+  left: 0;
+  width: 14px;
+  height: 10px;
+  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.75), rgba(255,143,179,.90));
+  border-radius: 80% 20% 80% 20%;
+  transform: rotate(15deg);
+  pointer-events: none;
+  z-index: 9998;
+  opacity: .95;
+  filter: drop-shadow(0 8px 14px rgba(255,77,125,.16));
+  animation:
+    petalFall var(--dur, 2800ms) linear forwards,
+    petalSway var(--sway, 1200ms) ease-in-out infinite;
+}
+@keyframes petalFall{
+  0%   { transform: translate(var(--x, 0), -12vh) rotate(var(--r0, 0deg)); opacity: 0; }
+  10%  { opacity: .95; }
+  100% { transform: translate(calc(var(--x, 0) + var(--dx, 0px)), 112vh) rotate(var(--r1, 220deg)); opacity: 0; }
+}
+@keyframes petalSway{
+  0%,100%{ margin-left: 0; }
+  50%    { margin-left: calc(var(--amp, 18px)); }
+}
+
+/* If you still use .sparkle elsewhere, keep it above everything */
+.sparkle{
+  pointer-events: none;
+  z-index: 9999;
+  user-select: none;
+  filter: drop-shadow(0 10px 18px rgba(255,77,125,.18));
+}
+
+/* ===== Intro overlay (3s) ===== */
+.intro{
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(900px 650px at 20% 15%, rgba(255,77,125,.18), transparent 60%),
+    radial-gradient(900px 650px at 85% 10%, rgba(168,140,255,.14), transparent 62%),
+    radial-gradient(900px 650px at 55% 105%, rgba(120,255,224,.10), transparent 62%),
+    rgba(10,10,20,.65);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  opacity: 1;
+  transition: opacity .45s ease, transform .45s ease;
+}
+.introInner{
+  text-align: center;
+  padding: 26px 22px;
+  border-radius: 26px;
+  background: rgba(255,255,255,.10);
+  border: 1px solid rgba(255,255,255,.16);
+  box-shadow: 0 30px 90px rgba(0,0,0,.35);
+  transform: translateY(0);
+}
+.introTop{
+  font-weight: 700;
+  letter-spacing: .02em;
+  color: rgba(255,255,255,.92);
+  margin-bottom: 10px;
+}
+.introBig{
+  font-family: "Playfair Display", serif;
+  font-size: clamp(28px, 5vw, 52px);
+  color: rgba(255,255,255,.96);
+  letter-spacing: -0.02em;
+}
+.introSmall{
+  margin-top: 12px;
+  font-size: 13px;
+  color: rgba(255,255,255,.78);
+}
+.intro.hide{
+  opacity: 0;
+  transform: scale(1.01);
+  pointer-events: none;
+}
