@@ -491,3 +491,7 @@ body.musicOn #openLetter.btn.primary{
   #glow{ transition:none; }
   body.musicOn #openLetter.btn.primary{ animation:none; }
 }
+@keyframes floatUp {
+  0% { transform: translateY(0) scale(1); opacity: 1; }
+  100% { transform: translateY(-80px) scale(1.5); opacity: 0; }
+}
